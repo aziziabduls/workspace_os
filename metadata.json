@@ -1,0 +1,7 @@
+{
+  "name": "WorkSpace OS",
+  "description": "A comprehensive employee workspace dashboard featuring attendance tracking, task management, and communication tools.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
