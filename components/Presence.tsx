@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, Button, Select, Badge, cn } from './ui';
+import { Card, CardContent, CardHeader, CardTitle, Button, Badge } from './ui';
 import { MapPin, Clock, Building2, Home, Building } from 'lucide-react';
 import { AttendanceRecord } from '../types';
 
@@ -47,7 +47,7 @@ export const Presence: React.FC<PresenceProps> = ({ onCheckIn, lastRecord }) => 
         });
         setLoading(false);
       },
-      (error) => {
+      (_) => {
         setGeoError("Unable to retrieve location. Please allow permission.");
         setLoading(false);
       }

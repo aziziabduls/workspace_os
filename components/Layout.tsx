@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, cn } from './ui';
-import { LayoutDashboard, CheckCircle2, Calendar, Mail, UserCircle, Settings, LogOut, Menu, X, Laptop } from 'lucide-react';
+import { LayoutDashboard, CheckCircle2, Calendar, Mail, UserCircle, Settings, LogOut, Menu, Laptop } from 'lucide-react';
 import { User } from '../types';
 
 interface LayoutProps {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, Button, Badge, Input, Select } from './ui';
+import { Card, CardContent, Button, Badge, Input, Select } from './ui';
 import { Task } from '../types';
-import { Plus, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
+import { Plus, CheckCircle2 } from 'lucide-react';
 
 interface TasksProps {
   tasks: Task[];

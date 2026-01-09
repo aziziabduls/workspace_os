@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, Button, Input, Select, Badge } from './ui';
 import { LeaveRequest, User } from '../types';
-import { CalendarDays, AlertTriangle } from 'lucide-react';
+import { CalendarDays } from 'lucide-react';
 
 interface PermitProps {
   leaves: LeaveRequest[];

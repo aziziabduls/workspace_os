@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, Button, Badge } from './ui';
+import { Card, CardContent, CardHeader, CardTitle, Button } from './ui';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { User, Task, AttendanceRecord, EmailMessage } from '../types';
 import { Briefcase, CalendarCheck, Mail, Clock, ArrowRight } from 'lucide-react';
@@ -152,7 +152,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, tasks, attendance, e
                     paddingAngle={5}
                     dataKey="value"
                 >
-                    {attendanceData.map((entry, index) => (
+                    {attendanceData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                 </Pie>

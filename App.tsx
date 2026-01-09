@@ -93,7 +93,7 @@ const App: React.FC = () => {
       }
   }, [isDark]);
 
-  const handleLogin = (email: string) => {
+  const handleLogin = () => {
     setIsAuthenticated(true);
   };
 
