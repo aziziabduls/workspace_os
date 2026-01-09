@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, Button, Badge } from './ui';
+import { Card, CardContent, CardHeader, CardTitle, Button, Badge, Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from './ui';
 import { MapPin, Clock, Building2, Home, Building } from 'lucide-react';
 import { AttendanceRecord } from '../types';
 
 interface PresenceProps {
   onCheckIn: (record: Partial<AttendanceRecord>) => void;
-  lastRecord?: AttendanceRecord;
+  attendance: AttendanceRecord[];
 }
 
-export const Presence: React.FC<PresenceProps> = ({ onCheckIn, lastRecord }) => {
+export const Presence: React.FC<PresenceProps> = ({ onCheckIn, attendance }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [locationType, setLocationType] = useState<'Head Office' | 'Branch' | 'WFH'>('Head Office');
   const [branchName, setBranchName] = useState('');
@@ -17,15 +17,23 @@ export const Presence: React.FC<PresenceProps> = ({ onCheckIn, lastRecord }) => 
   const [loading, setLoading] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
 
+  // Get the latest record to check status
+  const lastRecord = attendance.length > 0 ? attendance[attendance.length - 1] : undefined;
+
+  // Sort attendance for history table (newest first)
+  const history = [...attendance].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // Check if already checked in today based on lastRecord props or local state simulation
+  // Check if already checked in today based on lastRecord
   useEffect(() => {
      if(lastRecord && lastRecord.date === new Date().toISOString().split('T')[0] && !lastRecord.checkOut) {
          setCheckedIn(true);
+     } else {
+         setCheckedIn(false);
      }
   }, [lastRecord]);
 
@@ -69,12 +77,13 @@ export const Presence: React.FC<PresenceProps> = ({ onCheckIn, lastRecord }) => 
         status: currentTime.getHours() > 9 ? 'Late' : 'Present'
     };
     onCheckIn(record);
-    setCheckedIn(true);
+    // setCheckedIn(true); // Handled by useEffect dependent on attendance prop update
   };
 
   const handleCheckOut = () => {
       // Logic for checkout (update existing record)
-      setCheckedIn(false); // Reset for demo purposes or switch state
+      // In a real app, you'd call an update function. Here we just simulate UI.
+      setCheckedIn(false); 
       alert("Checked out successfully at " + currentTime.toLocaleTimeString());
   };
 
@@ -186,6 +195,59 @@ export const Presence: React.FC<PresenceProps> = ({ onCheckIn, lastRecord }) => 
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Attendance History</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Location</TableHead>
+                <TableHead>Check In</TableHead>
+                <TableHead>Check Out</TableHead>
+                <TableHead className="text-right">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {history.length === 0 && (
+                 <TableRow>
+                   <TableCell colSpan={5} className="text-center text-muted-foreground h-24">
+                     No attendance records found.
+                   </TableCell>
+                 </TableRow>
+              )}
+              {history.slice(0, 10).map((record) => (
+                <TableRow key={record.id}>
+                  <TableCell className="font-medium">{record.date}</TableCell>
+                  <TableCell>
+                    <div className="flex flex-col">
+                      <span>{record.locationType}</span>
+                      {record.locationName && (
+                        <span className="text-xs text-muted-foreground">{record.locationName}</span>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>{record.checkIn || '-'}</TableCell>
+                  <TableCell>{record.checkOut || '-'}</TableCell>
+                  <TableCell className="text-right">
+                    <Badge variant={
+                      record.status === 'Present' ? 'success' :
+                      record.status === 'Late' ? 'warning' :
+                      record.status === 'Sick' ? 'destructive' :
+                      'secondary'
+                    }>
+                      {record.status}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 };

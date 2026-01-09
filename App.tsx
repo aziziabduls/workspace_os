@@ -122,8 +122,8 @@ const App: React.FC = () => {
       case 'dashboard':
         return <Dashboard user={CURRENT_USER} tasks={tasks} attendance={attendance} emails={MOCK_EMAILS} onNavigate={setView} />;
       case 'presence':
-        // Pass the latest attendance record to see if user is checked in
-        return <Presence onCheckIn={handleCheckIn} lastRecord={attendance[attendance.length - 1]} />;
+        // Pass the full attendance array
+        return <Presence onCheckIn={handleCheckIn} attendance={attendance} />;
       case 'tasks':
         return <Tasks tasks={tasks} addTask={handleAddTask} />;
       case 'permit':

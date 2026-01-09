@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, Button } from './ui';
+import { Card, CardContent, CardHeader, CardTitle, Button, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge } from './ui';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { User, Task, AttendanceRecord, EmailMessage } from '../types';
 import { Briefcase, CalendarCheck, Mail, Clock, ArrowRight } from 'lucide-react';
@@ -44,6 +44,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, tasks, attendance, e
   // Check if checked in today
   const today = new Date().toISOString().split('T')[0];
   const isCheckedIn = attendance.find(a => a.date === today && a.checkIn);
+
+  // Sort attendance by date descending for the table
+  const sortedAttendance = [...attendance].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -168,6 +171,60 @@ export const Dashboard: React.FC<DashboardProps> = ({ user, tasks, attendance, e
           </CardContent>
         </Card>
       </div>
+
+      {/* Attendance Table Row */}
+      <Card className="col-span-7">
+        <CardHeader>
+          <CardTitle>Recent Attendance History</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Location</TableHead>
+                <TableHead>Check In</TableHead>
+                <TableHead>Check Out</TableHead>
+                <TableHead className="text-right">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {sortedAttendance.length === 0 && (
+                 <TableRow>
+                   <TableCell colSpan={5} className="text-center text-muted-foreground h-24">
+                     No attendance records found.
+                   </TableCell>
+                 </TableRow>
+              )}
+              {sortedAttendance.slice(0, 5).map((record) => (
+                <TableRow key={record.id}>
+                  <TableCell className="font-medium">{record.date}</TableCell>
+                  <TableCell>
+                    <div className="flex flex-col">
+                      <span>{record.locationType}</span>
+                      {record.locationName && (
+                        <span className="text-xs text-muted-foreground">{record.locationName}</span>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>{record.checkIn || '-'}</TableCell>
+                  <TableCell>{record.checkOut || '-'}</TableCell>
+                  <TableCell className="text-right">
+                    <Badge variant={
+                      record.status === 'Present' ? 'success' :
+                      record.status === 'Late' ? 'warning' :
+                      record.status === 'Sick' ? 'destructive' :
+                      'secondary'
+                    }>
+                      {record.status}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 };
